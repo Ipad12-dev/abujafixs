@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report a Problem — AbujaFix</title>
+  <meta name="description" content="Report a bad road, broken streetlight, blocked drain or abandoned project in Abuja FCT. Quick or detailed — your choice." />
+  <link rel="preconnect" href="https://fonts.bunny.net" />
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1D9E75; --green-light: #EAF3DE; --green-dark: #27500A; --green-mid: #3B6D11;
+      --red: #E24B4A; --amber: #BA7517; --blue: #378ADD;
+      --border: #E5E4DF; --bg: #FAFAF8; --bg2: #F4F3EF;
+      --text: #1A1A18; --text2: #6B6B68; --radius: 10px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    a { text-decoration: none; color: inherit; }
+
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; }
+    .logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { font-size: 13px; color: var(--text2); }
+    .nav-links a.active { color: var(--green); font-weight: 500; }
+    .nav-cta { background: var(--green); color: #fff !important; padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+
+    .page-header { padding: 2rem 1.5rem 1.5rem; border-bottom: 0.5px solid var(--border); max-width: 640px; margin: 0 auto; }
+    .page-header h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 0.3rem; }
+    .page-header p { font-size: 14px; color: var(--text2); margin-bottom: 1.2rem; }
+
+    .toggle-wrap { display: flex; border: 0.5px solid var(--border); border-radius: 9px; overflow: hidden; width: fit-content; }
+    .tog-btn { padding: 9px 20px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--text2); font-family: inherit; display: flex; align-items: center; gap: 6px; }
+    .tog-btn.active { background: var(--green); color: #fff; }
+
+    .form-wrap { padding: 1.5rem; max-width: 640px; margin: 0 auto; }
+    .field { margin-bottom: 1.2rem; }
+    label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+    input, select, textarea { width: 100%; padding: 11px 14px; border: 0.5px solid #D0CFC9; border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+    input:focus, select:focus, textarea:focus { border-color: var(--green); }
+    textarea { resize: vertical; min-height: 90px; }
+    .form-row { display: flex; gap: 10px; }
+    @media (max-width: 480px) { .form-row { flex-direction: column; } }
+    .form-row .field { flex: 1; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    @media (max-width: 380px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+    .cat-card { border: 0.5px solid var(--border); border-radius: 9px; padding: 0.8rem 0.6rem; text-align: center; cursor: pointer; background: #fff; transition: all 0.1s; }
+    .cat-card:hover { border-color: var(--green); }
+    .cat-card.active { border: 2px solid var(--green); background: var(--green-light); }
+    .cat-card i { font-size: 20px; color: var(--text2); display: block; margin-bottom: 5px; }
+    .cat-card.active i { color: var(--green); }
+    .cat-label { font-size: 11px; font-weight: 500; color: var(--text2); }
+    .cat-card.active .cat-label { color: var(--green-dark); }
+
+    .sev-row { display: flex; gap: 8px; }
+    .sev-btn { flex: 1; border: 0.5px solid var(--border); border-radius: 9px; padding: 9px 6px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; background: #fff; color: var(--text2); font-family: inherit; }
+    .sev-btn.low.active { background: var(--green-light); color: var(--green-dark); border-color: var(--green); }
+    .sev-btn.med.active { background: #FAEEDA; color: #633806; border-color: var(--amber); }
+    .sev-btn.high.active { background: #FCEBEB; color: #791F1F; border-color: var(--red); }
+
+    .upload-zone { border: 1.5px dashed var(--border); border-radius: 9px; padding: 1.8rem; text-align: center; cursor: pointer; background: var(--bg2); transition: border-color 0.15s; }
+    .upload-zone:hover { border-color: var(--green); }
+    .upload-zone i { font-size: 26px; color: var(--text2); margin-bottom: 8px; display: block; }
+    .upload-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+    .upload-sub { font-size: 12px; color: var(--text2); }
+    #file-input { display: none; }
+    .file-chosen { font-size: 12px; color: var(--green); margin-top: 8px; font-weight: 500; }
+
+    .divider { height: 0.5px; background: var(--border); margin: 1.5rem 0; }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .submit-btn { width: 100%; background: var(--green); color: #fff; border: none; padding: 13px; border-radius: 9px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:hover { background: #179063; }
+    .form-note { font-size: 12px; color: var(--text2); text-align: center; margin-top: 8px; }
+
+    .progress-bar { display: flex; gap: 5px; margin-bottom: 1.5rem; }
+    .prog-seg { flex: 1; height: 3px; border-radius: 2px; background: var(--border); }
+    .prog-seg.done { background: var(--green); }
+    .prog-seg.active { background: #97C459; }
+
+    .map-placeholder { border: 0.5px solid var(--border); border-radius: 9px; overflow: hidden; margin-bottom: 1.2rem; }
+    .map-ph-header { padding: 0.7rem 1rem; border-bottom: 0.5px solid var(--border); background: var(--bg2); display: flex; align-items: center; justify-content: space-between; }
+    .map-ph-title { font-size: 13px; font-weight: 600; }
+    .map-badge { font-size: 11px; background: var(--green-light); color: var(--green-dark); padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+    .map-ph-body { height: 200px; background: var(--bg2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; border-bottom: 0.5px solid var(--border); }
+    .map-ph-body i { font-size: 30px; color: var(--green); }
+    .map-ph-body p { font-size: 13px; color: var(--text2); }
+    .map-ph-footer { padding: 0.6rem 1rem; font-size: 12px; color: var(--text2); }
+
+    .success-wrap { display: none; padding: 3rem 1.5rem; text-align: center; max-width: 640px; margin: 0 auto; }
+    .success-circle { width: 64px; height: 64px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; }
+    .success-circle i { font-size: 30px; color: var(--green); }
+    .success-h { font-size: 22px; font-weight: 600; margin-bottom: 0.4rem; }
+    .success-p { font-size: 14px; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6; }
+    .report-id { font-size: 14px; background: var(--bg2); border-radius: 9px; padding: 10px 18px; display: inline-block; font-weight: 600; margin-bottom: 1.5rem; color: var(--green); border: 0.5px solid var(--border); }
+    .success-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-outline { background: transparent; border: 0.5px solid var(--border); padding: 10px 20px; border-radius: 9px; font-size: 14px; cursor: pointer; color: var(--text); font-family: inherit; display: inline-flex; align-items: center; gap: 7px; }
+    .btn-filled { background: var(--green); border: none; padding: 10px 20px; border-radius: 9px; font-size: 14px; cursor: pointer; color: #fff; font-family: inherit; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><a href="index.html">Abuja<span>Fix</span></a></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="map.html">Live map</a>
+      <a href="report.html" class="active nav-cta"><i class="ti ti-plus"></i> Report</a>
+    </div>
+  </nav>
+
+  <div id="main-content">
+    <div class="page-header">
+      <h1>Report a problem</h1>
+      <p>Choose how much detail you want to provide — quick gets it on the map fast, detailed gives it more weight.</p>
+      <div class="toggle-wrap">
+        <button class="tog-btn active" id="btn-quick" onclick="setMode('quick')"><i class="ti ti-bolt"></i> Quick — 60 sec</button>
+        <button class="tog-btn" id="btn-detail" onclick="setMode('detail')"><i class="ti ti-list-details"></i> Detailed report</button>
+      </div>
+    </div>
+
+    <!-- QUICK MODE -->
+    <div id="mode-quick" class="form-wrap">
+      <p class="section-title"><i class="ti ti-bolt"></i> Three fields. That's it.</p>
+
+      <div class="field">
+        <label>Your area in Abuja</label>
+        <select id="q-area">
+          <option value="">Select area</option>
+          <option>Gwarinpa</option><option>Wuse 2</option><option>Maitama</option>
+          <option>Garki</option><option>Asokoro</option><option>Kubwa</option>
+          <option>Nyanya</option><option>Karu</option><option>Lugbe</option>
+          <option>Lokogoma</option><option>Utako</option><option>Kuje</option>
+          <option>Gwagwalada</option><option>Bwari</option><option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>What type of problem?</label>
+        <div class="cat-grid" id="q-cats">
+          <div class="cat-card active" onclick="pickCat(this,'q-cats')"><i class="ti ti-road"></i><div class="cat-label">Bad road / pothole</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-bulb-off"></i><div class="cat-label">Broken streetlight</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-droplet-off"></i><div class="cat-label">Blocked drain</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-building-off"></i><div class="cat-label">Abandoned project</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-trash"></i><div class="cat-label">Waste / refuse</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-dots"></i><div class="cat-label">Other</div></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Brief description (optional)</label>
+        <textarea id="q-desc" placeholder="e.g. Deep pothole on Gwarinpa 6th Avenue near the filling station..."></textarea>
+      </div>
+
+      <button class="submit-btn" onclick="submitReport('quick')"><i class="ti ti-send"></i> Submit report now</button>
+      <p class="form-note">Anonymous by default. No account needed.</p>
+    </div>
+
+    <!-- DETAILED MODE -->
+    <div id="mode-detail" style="display:none;" class="form-wrap">
+      <div class="progress-bar">
+        <div class="prog-seg done"></div>
+        <div class="prog-seg active"></div>
+        <div class="prog-seg"></div>
+        <div class="prog-seg"></div>
+      </div>
+
+      <p class="section-title"><i class="ti ti-map-pin"></i> Location details</p>
+
+      <div class="map-placeholder">
+        <div class="map-ph-header">
+          <span class="map-ph-title">Pin your exact location</span>
+          <span class="map-badge"><i class="ti ti-map" style="font-size:11px;"></i> Abuja FCT</span>
+        </div>
+        <div class="map-ph-body">
+          <i class="ti ti-map-pin"></i>
+          <p>Interactive map — tap to drop your pin</p>
+        </div>
+        <div class="map-ph-footer"><i class="ti ti-info-circle" style="font-size:12px;"></i> Use the area + landmark fields below if the map isn't available</div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Area / district</label>
+          <select id="d-area">
+            <option value="">Select area</option>
+            <option>Gwarinpa</option><option>Wuse 2</option><option>Maitama</option>
+            <option>Garki</option><option>Asokoro</option><option>Kubwa</option>
+            <option>Nyanya</option><option>Karu</option><option>Lugbe</option>
+            <option>Lokogoma</option><option>Utako</option><option>Kuje</option>
+            <option>Gwagwalada</option><option>Bwari</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Street / nearest landmark</label>
+          <input type="text" id="d-street" placeholder="e.g. beside Access Bank, 6th Avenue" />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="section-title"><i class="ti ti-tag"></i> Problem details</p>
+
+      <div class="field">
+        <label>Category</label>
+        <div class="cat-grid" id="d-cats">
+          <div class="cat-card active" onclick="pickCat(this,'d-cats')"><i class="ti ti-road"></i><div class="cat-label">Bad road / pothole</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-bulb-off"></i><div class="cat-label">Broken streetlight</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-droplet-off"></i><div class="cat-label">Blocked drain</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-building-off"></i><div class="cat-label">Abandoned project</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-trash"></i><div class="cat-label">Waste / refuse</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-dots"></i><div class="cat-label">Other</div></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>How severe is this?</label>
+        <div class="sev-row">
+          <button class="sev-btn low" onclick="pickSev(this,'low')">Minor</button>
+          <button class="sev-btn med active" onclick="pickSev(this,'med')">Moderate</button>
+          <button class="sev-btn high" onclick="pickSev(this,'high')">Severe / dangerous</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Detailed description</label>
+        <textarea id="d-desc" placeholder="How long has this problem existed? How is it affecting people? Any safety risks?"></textarea>
+      </div>
+
+      <div class="divider"></div>
+      <p class="section-title"><i class="ti ti-photo"></i> Photo evidence</p>
+
+      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+        <i class="ti ti-cloud-upload"></i>
+        <div class="upload-title">Tap to upload a photo</div>
+        <div class="upload-sub">JPG or PNG, max 5MB. Strong evidence = faster government response.</div>
+        <div class="file-chosen" id="file-name"></div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" onchange="showFileName(this)" />
+
+      <div class="divider"></div>
+      <p class="section-title"><i class="ti ti-user"></i> Your contact (optional)</p>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" id="d-name" placeholder="Your name" />
+        </div>
+        <div class="field">
+          <label>Phone / WhatsApp</label>
+          <input type="tel" id="d-phone" placeholder="+234..." />
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitReport('detail')"><i class="ti ti-send"></i> Submit detailed report</button>
+      <p class="form-note">Your contact info is never made public. Used only to follow up.</p>
+    </div>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="success-wrap" id="success-wrap">
+    <div class="success-circle"><i class="ti ti-circle-check"></i></div>
+    <h2 class="success-h">Report submitted!</h2>
+    <p class="success-p">Your report is now live on the AbujaFix public map. Every view, every share, every duplicate report from your area builds pressure on authorities to act.</p>
+    <div class="report-id" id="report-id">Report #ABJ-0041</div>
+    <div class="success-actions">
+      <button class="btn-outline" onclick="resetForm()"><i class="ti ti-plus"></i> Report another</button>
+      <a href="map.html" class="btn-filled"><i class="ti ti-map"></i> View on map</a>
+    </div>
+  </div>
+
+  <script>
+    function setMode(m) {
+      document.getElementById('mode-quick').style.display = m === 'quick' ? 'block' : 'none';
+      document.getElementById('mode-detail').style.display = m === 'detail' ? 'block' : 'none';
+      document.getElementById('btn-quick').className = 'tog-btn' + (m === 'quick' ? ' active' : '');
+      document.getElementById('btn-detail').className = 'tog-btn' + (m === 'detail' ? ' active' : '');
+    }
+    function pickCat(el, groupId) {
+      document.querySelectorAll('#' + groupId + ' .cat-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function pickSev(el, cls) {
+      document.querySelectorAll('.sev-btn').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function showFileName(input) {
+      const fn = document.getElementById('file-name');
+      if (input.files && input.files[0]) fn.textContent = '✓ ' + input.files[0].name;
+    }
+    function submitReport(mode) {
+      const area = document.getElementById(mode === 'quick' ? 'q-area' : 'd-area').value;
+      if (!area) { alert('Please select your area first.'); return; }
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('success-wrap').style.display = 'block';
+      document.getElementById('report-id').textContent = 'Report #ABJ-0' + (Math.floor(Math.random() * 900) + 100);
+      window.scrollTo(0, 0);
+    }
+    function resetForm() {
+      document.getElementById('success-wrap').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      setMode('quick');
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>

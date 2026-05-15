@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AbujaFix — Report. Map. Fix.</title>
+  <meta name="description" content="Abuja's first citizen-powered infrastructure map. Report bad roads, broken streetlights, blocked drains and abandoned projects across FCT." />
+  <link rel="preconnect" href="https://fonts.bunny.net" />
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1D9E75;
+      --green-light: #EAF3DE;
+      --green-dark: #27500A;
+      --green-mid: #3B6D11;
+      --red: #E24B4A;
+      --border: #E5E4DF;
+      --bg: #FAFAF8;
+      --bg2: #F4F3EF;
+      --text: #1A1A18;
+      --text2: #6B6B68;
+      --radius: 10px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; }
+    .logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { font-size: 13px; color: var(--text2); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--green); color: #fff !important; padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+
+    /* HERO */
+    .hero { padding: 4rem 1.5rem 3rem; border-bottom: 0.5px solid var(--border); max-width: 720px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-mid); background: var(--green-light); padding: 4px 12px; border-radius: 20px; margin-bottom: 1.5rem; font-weight: 500; }
+    h1 { font-size: clamp(32px, 5vw, 44px); font-weight: 600; line-height: 1.12; letter-spacing: -1.5px; margin-bottom: 1.2rem; }
+    h1 em { color: var(--green); font-style: normal; }
+    .hero-sub { font-size: 16px; color: var(--text2); line-height: 1.7; max-width: 540px; margin-bottom: 2rem; }
+    .hero-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .btn-primary { background: var(--green); color: #fff; border: none; padding: 11px 22px; border-radius: 9px; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+    .btn-primary:hover { background: #179063; }
+    .btn-ghost { background: transparent; color: var(--text2); border: 0.5px solid var(--border); padding: 11px 22px; border-radius: 9px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+    .btn-ghost:hover { border-color: var(--text2); }
+    .hero-count { font-size: 13px; color: var(--text2); }
+    .hero-count strong { color: var(--green); }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); }
+    .stat-item { padding: 1.5rem 1rem; text-align: center; border-right: 0.5px solid var(--border); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 28px; font-weight: 600; color: var(--green); letter-spacing: -1px; }
+    .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.4; }
+
+    /* SECTIONS */
+    section { padding: 3rem 1.5rem; border-bottom: 0.5px solid var(--border); max-width: 720px; margin: 0 auto; }
+    .section-tag { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; }
+    h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+    .section-sub { font-size: 15px; color: var(--text2); line-height: 1.7; margin-bottom: 1.8rem; }
+
+    /* PROBLEMS */
+    .problems-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 480px) { .problems-grid { grid-template-columns: 1fr; } }
+    .prob-card { background: var(--bg2); border-radius: var(--radius); padding: 1.1rem; border: 0.5px solid var(--border); }
+    .prob-icon { font-size: 22px; color: var(--green); margin-bottom: 8px; }
+    .prob-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .prob-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* QUOTE */
+    .quote-block { border-left: 3px solid var(--green); padding: 0.9rem 1.1rem; margin: 1.5rem 0; background: var(--bg2); border-radius: 0 var(--radius) var(--radius) 0; }
+    .quote-block p { font-size: 14px; color: var(--text2); line-height: 1.6; font-style: italic; margin-bottom: 5px; }
+    .quote-block cite { font-size: 12px; color: var(--green); font-style: normal; font-weight: 500; }
+
+    /* EVIDENCE */
+    .evidence-card { border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+    .evidence-header { padding: 0.8rem 1.1rem; border-bottom: 0.5px solid var(--border); background: var(--bg2); }
+    .evidence-header h3 { font-size: 14px; font-weight: 600; }
+    .evidence-list { list-style: none; }
+    .evidence-list li { display: flex; gap: 10px; align-items: flex-start; padding: 0.75rem 1.1rem; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .evidence-list li:last-child { border-bottom: none; }
+    .evidence-list li i { color: var(--red); flex-shrink: 0; margin-top: 2px; }
+    .source-line { font-size: 11px; color: var(--text2); padding: 0.6rem 1.1rem; background: var(--bg2); }
+    .source-line span { color: var(--green); font-weight: 500; }
+
+    /* AREAS */
+    .areas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 1.2rem; }
+    @media (max-width: 480px) { .areas-grid { grid-template-columns: repeat(2, 1fr); } }
+    .area-card { background: var(--bg2); border-radius: var(--radius); padding: 0.9rem; border: 0.5px solid var(--border); text-align: center; }
+    .area-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); margin: 0 auto 6px; }
+    .area-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .area-issue { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+    /* HOW IT WORKS */
+    .steps { display: flex; flex-direction: column; }
+    .step { display: flex; gap: 1.1rem; padding: 1.2rem 0; border-bottom: 0.5px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--green-light); color: var(--green-mid); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+    /* REVENUE */
+    .revenue-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 480px) { .revenue-grid { grid-template-columns: 1fr; } }
+    .rev-card { background: var(--bg2); border-radius: var(--radius); padding: 1.1rem; border: 0.5px solid var(--border); }
+    .rev-icon { font-size: 20px; color: var(--green); margin-bottom: 7px; }
+    .rev-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .rev-val { font-size: 13px; color: var(--green); font-weight: 600; margin-bottom: 4px; }
+    .rev-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+    /* FORM */
+    .form-section { padding: 3rem 1.5rem; max-width: 720px; margin: 0 auto; }
+    .form-section h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+    .form-sub { font-size: 15px; color: var(--text2); margin-bottom: 1.8rem; line-height: 1.6; }
+    .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 480px) { .form-row { flex-direction: column; } }
+    .form-input { flex: 1; padding: 11px 14px; border: 0.5px solid #D0CFC9; border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); outline: none; font-family: inherit; }
+    .form-input:focus { border-color: var(--green); }
+    .form-select { width: 100%; padding: 11px 14px; border: 0.5px solid #D0CFC9; border-radius: 9px; font-size: 14px; background: #fff; color: var(--text); outline: none; font-family: inherit; margin-bottom: 12px; }
+    .form-select:focus { border-color: var(--green); }
+    .form-submit { width: 100%; background: var(--green); color: #fff; border: none; padding: 13px; border-radius: 9px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .form-submit:hover { background: #179063; }
+    .form-note { font-size: 12px; color: var(--text2); text-align: center; margin-top: 10px; }
+    .form-success { display: none; background: var(--green-light); border-radius: var(--radius); padding: 2rem; text-align: center; border: 0.5px solid #C0DD97; }
+    .success-icon { font-size: 32px; color: var(--green); margin-bottom: 10px; }
+    .success-h { font-size: 18px; font-weight: 600; margin-bottom: 5px; color: var(--green-dark); }
+    .success-p { font-size: 14px; color: var(--green-mid); line-height: 1.6; }
+
+    /* FOOTER */
+    footer { padding: 1.5rem; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; max-width: 720px; margin: 0 auto; }
+    .footer-logo { font-size: 14px; font-weight: 600; }
+    .footer-logo span { color: var(--green); }
+    .footer-p { font-size: 12px; color: var(--text2); }
+
+    /* UTIL */
+    .w-full { width: 100%; }
+    .mt-4 { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Abuja<span>Fix</span></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="map.html">Live map</a>
+      <a href="report.html" class="nav-cta"><i class="ti ti-plus"></i> Report a problem</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow"><i class="ti ti-alert-triangle"></i> Abuja. FCT. 2026.</div>
+    <h1>Our roads are broken.<br>Our drains are blocked.<br><em>Now we map it all.</em></h1>
+    <p class="hero-sub">Kubwa. Nyanya. Lugbe. Karu. Gwagwalada. FCT residents confirmed in January 2026 that infrastructure across these areas is in terrible condition — yet there is no public record. AbujaFix changes that. One report at a time.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">
+        <i class="ti ti-bell"></i> Get early access
+      </button>
+      <a href="map.html" class="btn-ghost">
+        <i class="ti ti-map"></i> View live map
+      </a>
+    </div>
+    <p class="hero-count"><strong id="counter">143</strong> Abuja residents already signed up</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">15</div>
+      <div class="stat-label">Lives lost to Abuja floods in 2024 — Nyanya & Garki</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">366</div>
+      <div class="stat-label">Central Abuja roads confirmed needing rehabilitation</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">₦2.3B</div>
+      <div class="stat-label">Cost of one flood cleanup in Jabi, 2024</div>
+    </div>
+  </div>
+
+  <section>
+    <p class="section-tag">The evidence</p>
+    <h2>This is what Abuja looks like</h2>
+    <p class="section-sub">Not opinions. Verified reports from Nigerian newspapers, government records and residents — published in 2025 and 2026.</p>
+
+    <div class="evidence-card">
+      <div class="evidence-header"><h3>What residents told Daily Trust — January 2026</h3></div>
+      <ul class="evidence-list">
+        <li><i class="ti ti-point-filled"></i>"Areas like Kubwa, Lugbe, Nyanya, Karu and Gwagwalada need intervention. The internal roads in these areas are in terrible condition." — FCT resident</li>
+        <li><i class="ti ti-point-filled"></i>Flash floods claimed 15 lives in Nyanya and Garki during the 2024 rainy season, submerging markets and bursting sewers</li>
+        <li><i class="ti ti-point-filled"></i>A single flood cleanup in Jabi cost ₦2.3 billion in 2024 — money that could have fixed preventive drainage</li>
+        <li><i class="ti ti-point-filled"></i>Kuje Area Council communities cut off from neighbouring towns every rainy season due to road collapse</li>
+        <li><i class="ti ti-point-filled"></i>Streetlights absent from Nyanya, Karu, Orozo and Karshi — residents appealed to the FCT Minister in December 2024</li>
+      </ul>
+      <div class="source-line">Sources: <span>Daily Trust (Jan 2026)</span> · <span>Africa's a Country (Feb 2026)</span> · <span>PM News (Dec 2024)</span></div>
+    </div>
+
+    <div class="quote-block">
+      <p>"Potholes are the number one complaint among Nigerian road users at 32.9%, with poor infrastructure extending travel times beyond what any navigation tool can predict."</p>
+      <cite>— SBM Intelligence Road Survey, January 2025 (245 drivers, 8 major cities including Abuja)</cite>
+    </div>
+
+    <p style="font-size:14px;font-weight:600;margin-bottom:0.8rem;">Worst-affected areas right now:</p>
+    <div class="areas-grid">
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Kubwa</div><div class="area-issue">Bad internal roads, security gaps</div></div>
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Nyanya</div><div class="area-issue">Floods, drainage failure, 15 deaths 2024</div></div>
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Lugbe</div><div class="area-issue">60+ homes flooded, bad roads</div></div>
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Karu</div><div class="area-issue">Terrible internal roads confirmed 2026</div></div>
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Kuje</div><div class="area-issue">Communities cut off every rainy season</div></div>
+      <div class="area-card"><div class="area-dot"></div><div class="area-name">Gwagwalada</div><div class="area-issue">Neglected roads, no streetlights</div></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-tag">How it works</p>
+    <h2>Three steps. Maximum impact.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">You spot it, you report it</div>
+          <div class="step-desc">See a pothole, broken streetlight, blocked drain or abandoned project? Open AbujaFix, drop a pin on the map, take a photo, pick a category. Done in under 60 seconds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">It goes live on the public map</div>
+          <div class="step-desc">Your report appears instantly on a live Abuja map visible to every resident, journalist, NGO and government official. No filter. No bureaucracy. Raw truth.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Data forces accountability</div>
+          <div class="step-desc">When 50 reports pile up in Nyanya, nobody can say they didn't know. Media covers it. FCDA and FCT Administration are forced to respond — publicly.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-tag">Revenue model</p>
+    <h2>Sustainable from day one</h2>
+    <p class="section-sub">No investors needed. AbujaFix generates real revenue while doing real good.</p>
+    <div class="revenue-grid">
+      <div class="rev-card"><div class="rev-icon"><i class="ti ti-rocket"></i></div><div class="rev-title">Boosted reports</div><div class="rev-val">₦1,000 – ₦2,000/report</div><div class="rev-desc">Communities pay to pin their report to the top for faster visibility</div></div>
+      <div class="rev-card"><div class="rev-icon"><i class="ti ti-building-community"></i></div><div class="rev-title">Estate dashboards</div><div class="rev-val">₦5,000 – ₦15,000/month</div><div class="rev-desc">Estate managers get private dashboards tracking their area's issue status</div></div>
+      <div class="rev-card"><div class="rev-icon"><i class="ti ti-chart-bar"></i></div><div class="rev-title">Data reports</div><div class="rev-val">₦100,000+/month</div><div class="rev-desc">Monthly infrastructure reports sold to FCT, NGOs and World Bank</div></div>
+      <div class="rev-card"><div class="rev-icon"><i class="ti ti-tools"></i></div><div class="rev-title">Contractor listings</div><div class="rev-val">₦3,000 – ₦5,000/month</div><div class="rev-desc">Verified road repair contractors pay to be listed on the platform</div></div>
+    </div>
+  </section>
+
+  <div class="form-section" id="waitlist">
+    <p class="section-tag">Join the movement</p>
+    <h2>Be part of the fix</h2>
+    <p class="form-sub">AbujaFix launches soon. Join the waitlist and get founding citizen status — your reports will be permanently marked as the first voices on the map.</p>
+    <div id="form-wrap">
+      <div class="form-row">
+        <input class="form-input" type="text" id="f-name" placeholder="Your full name" />
+      </div>
+      <div class="form-row">
+        <input class="form-input" type="email" id="f-email" placeholder="Email address" />
+        <input class="form-input" type="tel" id="f-phone" placeholder="WhatsApp (optional)" />
+      </div>
+      <select class="form-select" id="f-area">
+        <option value="">Select your area in Abuja</option>
+        <option>Gwarinpa</option><option>Wuse 2</option><option>Maitama</option>
+        <option>Garki</option><option>Asokoro</option><option>Kubwa</option>
+        <option>Nyanya</option><option>Karu</option><option>Lugbe</option>
+        <option>Lokogoma</option><option>Utako</option><option>Kuje</option>
+        <option>Gwagwalada</option><option>Bwari</option><option>Other</option>
+      </select>
+      <button class="form-submit" onclick="submitForm()"><i class="ti ti-send"></i> Join the waitlist — it's free</button>
+      <p class="form-note">No spam. No fees. Just a notification when we go live.</p>
+    </div>
+    <div class="form-success" id="form-success">
+      <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+      <div class="success-h">Welcome to AbujaFix!</div>
+      <div class="success-p">You're on the founding list. We'll reach you the moment we launch.<br>Thank you for caring about Abuja. 🇳🇬</div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Abuja<span>Fix</span></div>
+    <div class="footer-p">Built by an Abuja resident, for Abuja. 🇳🇬</div>
+  </footer>
+
+  <script>
+    function submitForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const email = document.getElementById('f-email').value.trim();
+      if (!name || !email) { alert('Please enter your name and email to join.'); return; }
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+      const c = document.getElementById('counter');
+      if (c) c.textContent = parseInt(c.textContent) + 1;
+    }
+  </script>
+</body>
+</html>
