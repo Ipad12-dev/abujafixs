@@ -141,48 +141,26 @@
   </div>
 
   <script>
-    // ── SAMPLE REPORTS DATA ──────────────────────────────────────
-    const reports = [
-      { id:'ABJ-001', lat:9.105, lng:7.308, area:'Kubwa', type:'road', desc:'Severe pothole on Gbaduwa street, vehicles getting damaged daily', sev:'high', time:'2 hrs ago' },
-      { id:'ABJ-002', lat:9.095, lng:7.315, area:'Kubwa', type:'road', desc:'Road completely washed out near Kubwa expressway', sev:'high', time:'5 hrs ago' },
-      { id:'ABJ-003', lat:9.058, lng:7.561, area:'Nyanya', type:'drain', desc:'Drainage blocked for 3 weeks, floods every time it rains', sev:'high', time:'1 hr ago' },
-      { id:'ABJ-004', lat:9.048, lng:7.570, area:'Nyanya', type:'drain', desc:'Sewage overflow on Market Road posing health risk', sev:'high', time:'3 hrs ago' },
-      { id:'ABJ-005', lat:8.988, lng:7.340, area:'Lugbe', type:'road', desc:'Giant pothole near Trademore estate entrance', sev:'med', time:'4 hrs ago' },
-      { id:'ABJ-006', lat:8.992, lng:7.328, area:'Lugbe', type:'drain', desc:'60+ homes at risk — drain completely blocked since last month', sev:'high', time:'6 hrs ago' },
-      { id:'ABJ-007', lat:9.115, lng:7.450, area:'Gwarinpa', type:'light', desc:'6 streetlights dead on 5th Avenue — very dangerous at night', sev:'med', time:'6 hrs ago' },
-      { id:'ABJ-008', lat:9.108, lng:7.462, area:'Gwarinpa', type:'light', desc:'No streetlights on 3rd Avenue since 2 months', sev:'med', time:'1 day ago' },
-      { id:'ABJ-009', lat:9.057, lng:7.455, area:'Wuse 2', type:'road', desc:'Multiple potholes on Aminu Kano Crescent damaging vehicles', sev:'med', time:'8 hrs ago' },
-      { id:'ABJ-010', lat:9.072, lng:7.492, area:'Maitama', type:'light', desc:'Streetlights on Aguiyi Ironsi Street not working for 2 weeks', sev:'low', time:'2 days ago' },
-      { id:'ABJ-011', lat:9.042, lng:7.410, area:'Garki', type:'abandon', desc:'Road construction abandoned 8 months ago — still incomplete, causing accidents', sev:'high', time:'1 day ago' },
-      { id:'ABJ-012', lat:9.078, lng:7.567, area:'Karu', type:'road', desc:'Potholes spanning full width of road — no alternative route for residents', sev:'high', time:'30 min ago' },
-      { id:'ABJ-013', lat:9.068, lng:7.572, area:'Karu', type:'drain', desc:'Flash flooding every rainy day due to blocked drainage', sev:'high', time:'2 days ago' },
-      { id:'ABJ-014', lat:8.940, lng:7.090, area:'Gwagwalada', type:'drain', desc:'Entire street floods in 10 minutes of rain, drain completely blocked', sev:'high', time:'3 days ago' },
-      { id:'ABJ-015', lat:8.950, lng:7.085, area:'Gwagwalada', type:'light', desc:'No streetlights on main road — residents afraid to go out at night', sev:'med', time:'3 days ago' },
-      { id:'ABJ-016', lat:9.020, lng:7.480, area:'Asokoro', type:'road', desc:'Pothole at entry of Asokoro extension damaging cars', sev:'med', time:'5 hrs ago' },
-      { id:'ABJ-017', lat:9.035, lng:7.395, area:'Garki', type:'road', desc:'Road cave-in near Garki hospital junction, dangerous for pedestrians', sev:'high', time:'7 hrs ago' },
-      { id:'ABJ-018', lat:9.060, lng:7.420, area:'Wuse 2', type:'abandon', desc:'Abandoned drainage project since 2023 — overgrown and blocking walkway', sev:'med', time:'2 days ago' },
-      { id:'ABJ-019', lat:8.870, lng:7.173, area:'Kuje', type:'road', desc:'Community road completely washed out — residents cut off in rainy season', sev:'high', time:'4 days ago' },
-      { id:'ABJ-020', lat:9.150, lng:7.390, area:'Bwari', type:'road', desc:'Deep potholes on Bwari-Kubwa link road, trucks getting stuck', sev:'high', time:'5 days ago' },
-    ];
+    const SUPABASE_URL = 'https://pahcyenqouciolmsoaiw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaGN5ZW5xb3VjaW9sbXNvYWl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MzUzNTgsImV4cCI6MjA5NDQxMTM1OH0.YXCmkUYbLd8kuiWMaBFl-uuKLipYT0mjg7AglQtIaVA';
 
-    // ── COLOUR CONFIG ────────────────────────────────────────────
     const typeConfig = {
       road:    { color: '#E24B4A', label: 'Bad road' },
       drain:   { color: '#378ADD', label: 'Blocked drain' },
       light:   { color: '#BA7517', label: 'Broken light' },
       abandon: { color: '#888780', label: 'Abandoned project' },
+      other:   { color: '#888780', label: 'Other' },
     };
 
-    // ── INIT MAP ─────────────────────────────────────────────────
     const map = L.map('map', { zoomControl: true }).setView([9.058, 7.450], 12);
-
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
       maxZoom: 19,
     }).addTo(map);
 
-    // ── MARKERS ──────────────────────────────────────────────────
-    const markers = [];
+    let allReports = [];
+    let markers = [];
+    let currentFilter = 'all';
 
     function makeIcon(color) {
       return L.divIcon({
@@ -193,66 +171,104 @@
       });
     }
 
-    reports.forEach(r => {
-      const cfg = typeConfig[r.type];
-      const marker = L.marker([r.lat, r.lng], { icon: makeIcon(cfg.color) });
-      const sevColors = { high: '#E24B4A', med: '#BA7517', low: '#1D9E75' };
-      const catPillStyle = `background:${cfg.color}22;color:${cfg.color};`;
-      marker.bindPopup(`
-        <div class="af-popup">
-          <strong>${r.area}</strong>
-          <span class="pop-cat" style="${catPillStyle}">${cfg.label}</span>
-          <div class="pop-desc">${r.desc}</div>
-          <div class="pop-time">Reported ${r.time} · #${r.id}</div>
-        </div>
-      `, { maxWidth: 220 });
-      marker.addTo(map);
-      markers.push({ marker, type: r.type, data: r });
-    });
+    function timeAgo(dateStr) {
+      const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + ' min ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + ' hrs ago';
+      return Math.floor(diff / 86400) + ' days ago';
+    }
 
-    // ── FEED ─────────────────────────────────────────────────────
-    function buildFeed(filter) {
+    function renderMarkers(reports) {
+      markers.forEach(({ marker }) => map.removeLayer(marker));
+      markers = [];
+      reports.forEach(r => {
+        if (!r.lat || !r.lng) return;
+        const cfg = typeConfig[r.type] || typeConfig.other;
+        const marker = L.marker([r.lat, r.lng], { icon: makeIcon(cfg.color) });
+        const catPillStyle = `background:${cfg.color}22;color:${cfg.color};`;
+        marker.bindPopup(`
+          <div class="af-popup">
+            <strong>${r.area}</strong>
+            <span class="pop-cat" style="${catPillStyle}">${cfg.label}</span>
+            <div class="pop-desc">${r.description || 'No description provided'}</div>
+            <div class="pop-time">Reported ${timeAgo(r.created_at)} · #${r.id.slice(0,8).toUpperCase()}</div>
+          </div>
+        `, { maxWidth: 220 });
+        marker.addTo(map);
+        markers.push({ marker, type: r.type });
+      });
+    }
+
+    function buildFeed(reports) {
       const feed = document.getElementById('report-feed');
-      const filtered = filter === 'all' ? reports : reports.filter(r => r.type === filter);
-      document.getElementById('feed-count').textContent = filtered.length + ' total';
-      feed.innerHTML = filtered.map(r => {
-        const cfg = typeConfig[r.type];
-        const sevLabel = { high: 'Severe', med: 'Moderate', low: 'Minor' }[r.sev];
+      document.getElementById('feed-count').textContent = reports.length + ' total';
+      if (reports.length === 0) {
+        feed.innerHTML = '<div style="padding:2rem 1rem;text-align:center;font-size:13px;color:var(--text2);">No reports yet in this category.<br>Be the first to report!</div>';
+        return;
+      }
+      feed.innerHTML = reports.map(r => {
+        const cfg = typeConfig[r.type] || typeConfig.other;
+        const sevLabel = { high: 'Severe', med: 'Moderate', low: 'Minor' }[r.severity] || 'Moderate';
         return `
           <div class="report-card" onclick="flyTo(${r.lat},${r.lng})">
             <div class="rc-top">
-              <span class="rc-cat ${r.type === 'abandon' ? 'abandon' : r.type}">${cfg.label}</span>
-              <span class="rc-time">${r.time}</span>
+              <span class="rc-cat ${r.type}">${cfg.label}</span>
+              <span class="rc-time">${timeAgo(r.created_at)}</span>
             </div>
             <div class="rc-area">${r.area}</div>
-            <div class="rc-desc">${r.desc}</div>
+            <div class="rc-desc">${r.description || 'No description'}</div>
             <div class="rc-sev">
-              <div class="sev-dot ${r.sev}"></div>
+              <div class="sev-dot ${r.severity || 'med'}"></div>
               <span class="sev-text">${sevLabel}</span>
             </div>
           </div>`;
       }).join('');
     }
 
-    function flyTo(lat, lng) {
-      map.flyTo([lat, lng], 15, { duration: 0.8 });
+    function updateStats(reports) {
+      document.getElementById('cnt-road').textContent  = reports.filter(r => r.type === 'road').length;
+      document.getElementById('cnt-drain').textContent = reports.filter(r => r.type === 'drain').length;
+      document.getElementById('cnt-light').textContent = reports.filter(r => r.type === 'light').length;
+      document.getElementById('cnt-other').textContent = reports.filter(r => !['road','drain','light'].includes(r.type)).length;
     }
 
-    // ── FILTER ───────────────────────────────────────────────────
+    function flyTo(lat, lng) {
+      if (lat && lng) map.flyTo([lat, lng], 15, { duration: 0.8 });
+    }
+
     function filterReports(type, btn) {
+      currentFilter = type;
       document.querySelectorAll('.filt').forEach(f => f.classList.remove('active'));
       btn.classList.add('active');
-      markers.forEach(({ marker, type: mtype }) => {
-        if (type === 'all' || mtype === type) {
-          marker.addTo(map);
-        } else {
-          map.removeLayer(marker);
-        }
-      });
-      buildFeed(type);
+      const filtered = type === 'all' ? allReports : allReports.filter(r => r.type === type);
+      renderMarkers(filtered);
+      buildFeed(filtered);
     }
 
-    buildFeed('all');
+    async function loadReports() {
+      const feed = document.getElementById('report-feed');
+      feed.innerHTML = '<div style="padding:2rem 1rem;text-align:center;font-size:13px;color:var(--text2);">Loading reports...</div>';
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/reports?select=*&order=created_at.desc`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+        if (!res.ok) throw new Error('Failed to load');
+        allReports = await res.json();
+        updateStats(allReports);
+        renderMarkers(allReports);
+        buildFeed(allReports);
+      } catch (err) {
+        feed.innerHTML = '<div style="padding:2rem 1rem;text-align:center;font-size:13px;color:var(--text2);">Could not load reports. Please refresh.</div>';
+      }
+    }
+
+    loadReports();
+    // Auto-refresh every 30 seconds to show new reports
+    setInterval(loadReports, 30000);
   </script>
 </body>
 </html>
