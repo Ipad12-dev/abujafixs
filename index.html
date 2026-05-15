@@ -257,7 +257,7 @@
   <div class="form-section" id="waitlist">
     <p class="section-tag">Join the movement</p>
     <h2>Be part of the fix</h2>
-    <p class="form-sub">AbujaFix launches soon. Join the waitlist and get founding citizen status — your reports will be permanently marked as the first voices on the map.</p>
+    <p class="form-sub">AbujaFix is live. Join the community and get founding citizen status — your reports will be permanently marked as the first voices on the Abuja map.</p>
     <div id="form-wrap">
       <div class="form-row">
         <input class="form-input" type="text" id="f-name" placeholder="Your full name" />
@@ -274,31 +274,73 @@
         <option>Lokogoma</option><option>Utako</option><option>Kuje</option>
         <option>Gwagwalada</option><option>Bwari</option><option>Other</option>
       </select>
-      <button class="form-submit" onclick="submitForm()"><i class="ti ti-send"></i> Join the waitlist — it's free</button>
-      <p class="form-note">No spam. No fees. Just a notification when we go live.</p>
+      <button class="form-submit" onclick="submitForm()"><i class="ti ti-send"></i> Join the community — it's free</button>
+      <p class="form-note">No spam. No fees. Free forever for citizens.</p>
     </div>
     <div class="form-success" id="form-success">
       <div class="success-icon"><i class="ti ti-circle-check"></i></div>
       <div class="success-h">Welcome to AbujaFix!</div>
-      <div class="success-p">You're on the founding list. We'll reach you the moment we launch.<br>Thank you for caring about Abuja. 🇳🇬</div>
+      <div class="success-p">You're now a founding citizen of AbujaFix. Go report your first problem and put it on the map!<br><br><a href="report.html" style="color:#1D9E75;font-weight:600;">Report a problem now →</a></div>
     </div>
   </div>
 
   <footer>
     <div class="footer-logo">Abuja<span>Fix</span></div>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <a href="index.html" style="font-size:13px;color:#6B6B68;text-decoration:none;">Home</a>
+      <a href="map.html" style="font-size:13px;color:#6B6B68;text-decoration:none;">Live map</a>
+      <a href="report.html" style="font-size:13px;color:#6B6B68;text-decoration:none;">Report</a>
+    </div>
     <div class="footer-p">Built by an Abuja resident, for Abuja. 🇳🇬</div>
   </footer>
 
   <script>
-    function submitForm() {
+    const SUPABASE_URL = 'https://pahcyenqouciolmsoaiw.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaGN5ZW5xb3VjaW9sbXNvYWl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MzUzNTgsImV4cCI6MjA5NDQxMTM1OH0.YXCmkUYbLd8kuiWMaBFl-uuKLipYT0mjg7AglQtIaVA';
+
+    async function loadCount() {
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist?select=id', {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        });
+        const data = await res.json();
+        const c = document.getElementById('counter');
+        if (c && Array.isArray(data)) c.textContent = data.length + 143;
+      } catch(e) {}
+    }
+
+    async function submitForm() {
       const name = document.getElementById('f-name').value.trim();
       const email = document.getElementById('f-email').value.trim();
+      const phone = document.getElementById('f-phone').value.trim();
+      const area = document.getElementById('f-area').value;
       if (!name || !email) { alert('Please enter your name and email to join.'); return; }
-      document.getElementById('form-wrap').style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
-      const c = document.getElementById('counter');
-      if (c) c.textContent = parseInt(c.textContent) + 1;
+      const btn = document.querySelector('.form-submit');
+      btn.textContent = 'Joining...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(SUPABASE_URL + '/rest/v1/waitlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify({ name, email, phone, area })
+        });
+        if (!res.ok) throw new Error('Failed');
+        document.getElementById('form-wrap').style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+        loadCount();
+      } catch(e) {
+        alert('Something went wrong. Please try again.');
+        btn.innerHTML = '<i class="ti ti-send"></i> Join the community — it's free';
+        btn.disabled = false;
+      }
     }
+
+    loadCount();
   </script>
 </body>
 </html>
