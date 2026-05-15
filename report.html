@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.bunny.net" />
   <link href="https://fonts.bunny.net/css?family=inter:400,500,600" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"><\/script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -175,11 +177,8 @@
           <span class="map-ph-title">Pin your exact location</span>
           <span class="map-badge"><i class="ti ti-map" style="font-size:11px;"></i> Abuja FCT</span>
         </div>
-        <div class="map-ph-body">
-          <i class="ti ti-map-pin"></i>
-          <p>Interactive map — tap to drop your pin</p>
-        </div>
-        <div class="map-ph-footer"><i class="ti ti-info-circle" style="font-size:12px;"></i> Use the area + landmark fields below if the map isn't available</div>
+        <div id="pin-map" style="height:220px;width:100%;z-index:1;"></div>
+        <div class="map-ph-footer" id="pin-coords"><i class="ti ti-info-circle" style="font-size:12px;"></i> Tap the map to drop your pin on the exact location</div>
       </div>
 
       <div class="form-row">
@@ -378,6 +377,39 @@
       btn.disabled = false;
       setMode('quick');
       window.scrollTo(0, 0);
+    }
+
+    // Pin map for detailed mode
+    let pinMap = null;
+    let pinMarker = null;
+    let pinnedLat = null;
+    let pinnedLng = null;
+
+    function initPinMap() {
+      if (pinMap) return;
+      setTimeout(() => {
+        pinMap = L.map('pin-map').setView([9.058, 7.450], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap', maxZoom: 19
+        }).addTo(pinMap);
+        pinMap.on('click', function(e) {
+          pinnedLat = e.latlng.lat.toFixed(6);
+          pinnedLng = e.latlng.lng.toFixed(6);
+          if (pinMarker) pinMap.removeLayer(pinMarker);
+          pinMarker = L.marker([pinnedLat, pinnedLng]).addTo(pinMap);
+          document.getElementById('pin-coords').innerHTML =
+            '<i class="ti ti-circle-check" style="color:#1D9E75;font-size:12px;"></i> Pin dropped at ' + pinnedLat + ', ' + pinnedLng;
+        });
+      }, 100);
+    }
+
+    const origSetMode = setMode;
+    function setMode(m) {
+      document.getElementById('mode-quick').style.display = m === 'quick' ? 'block' : 'none';
+      document.getElementById('mode-detail').style.display = m === 'detail' ? 'block' : 'none';
+      document.getElementById('btn-quick').className = 'tog-btn' + (m === 'quick' ? ' active' : '');
+      document.getElementById('btn-detail').className = 'tog-btn' + (m === 'detail' ? ' active' : '');
+      if (m === 'detail') initPinMap();
     }
   </script>
 </body>
