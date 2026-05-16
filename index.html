@@ -168,16 +168,16 @@
 
   <div class="stats-grid">
     <div class="stat-item">
-      <div class="stat-num">15</div>
-      <div class="stat-label">Lives lost to Abuja floods in 2024 — Nyanya & Garki</div>
+      <div class="stat-num" id="stat-lives">15</div>
+      <div class="stat-label" id="stat-lives-label">Lives lost to Abuja floods in 2024 — Nyanya & Garki</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">366</div>
-      <div class="stat-label">Central Abuja roads confirmed needing rehabilitation</div>
+      <div class="stat-num" id="stat-roads">366</div>
+      <div class="stat-label" id="stat-roads-label">Central Abuja roads confirmed needing rehabilitation</div>
     </div>
     <div class="stat-item">
-      <div class="stat-num">₦2.3B</div>
-      <div class="stat-label">Cost of one flood cleanup in Jabi, 2024</div>
+      <div class="stat-num" id="stat-cost">₦2.3B</div>
+      <div class="stat-label" id="stat-cost-label">Cost of one flood cleanup in Jabi, 2024</div>
     </div>
   </div>
 
@@ -310,6 +310,31 @@
       .catch(function() {});
     }
 
+    function loadStats() {
+      fetch(SUPABASE_URL + '/rest/v1/stats?select=*', {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!Array.isArray(data)) return;
+        data.forEach(function(s) {
+          if (s.stat_key === 'lives_lost') {
+            document.getElementById('stat-lives').textContent = s.stat_value;
+            document.getElementById('stat-lives-label').textContent = s.stat_label;
+          }
+          if (s.stat_key === 'roads_rehab') {
+            document.getElementById('stat-roads').textContent = s.stat_value;
+            document.getElementById('stat-roads-label').textContent = s.stat_label;
+          }
+          if (s.stat_key === 'flood_cost') {
+            document.getElementById('stat-cost').textContent = s.stat_value;
+            document.getElementById('stat-cost-label').textContent = s.stat_label;
+          }
+        });
+      })
+      .catch(function() {});
+    }
+
     function submitForm() {
       var name  = document.getElementById('f-name').value.trim();
       var email = document.getElementById('f-email').value.trim();
@@ -346,6 +371,7 @@
     }
 
     loadCount();
+    loadStats();
   </script>
 </body>
 </html>
