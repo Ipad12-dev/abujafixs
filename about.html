@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — AbujaFix</title>
+  <meta name="description" content="AbujaFix is Abuja's first citizen-powered infrastructure reporting platform. Learn about our mission, values and the problem we are solving." />
+  <link rel="preconnect" href="https://fonts.bunny.net" />
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600|bitter:400,600,700" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1D9E75; --green-light: #EAF3DE; --green-dark: #27500A; --green-mid: #3B6D11;
+      --red: #E24B4A; --amber: #BA7517;
+      --border: #E5E4DF; --bg: #FAFAF8; --bg2: #F4F3EF;
+      --text: #1A1A18; --text2: #6B6B68; --radius: 10px;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 0.5px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 1000; }
+    .logo { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; }
+    .logo span { color: var(--green); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a { font-size: 13px; color: var(--text2); }
+    .nav-links a.active { color: var(--green); font-weight: 600; }
+    .nav-cta { background: var(--green) !important; color: #fff !important; padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; }
+
+    /* HERO */
+    .about-hero { padding: 4rem 1.5rem 3rem; border-bottom: 0.5px solid var(--border); max-width: 720px; margin: 0 auto; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-mid); background: var(--green-light); padding: 4px 12px; border-radius: 20px; margin-bottom: 1.5rem; font-weight: 500; }
+    .about-hero h1 { font-family: 'Bitter', Georgia, serif; font-size: clamp(28px, 5vw, 40px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 1.2rem; }
+    .about-hero h1 em { color: var(--green); font-style: normal; }
+    .about-hero p { font-size: 16px; color: var(--text2); line-height: 1.8; max-width: 580px; }
+
+    /* MISSION BAND */
+    .mission-band { background: var(--green); padding: 3rem 1.5rem; }
+    .mission-inner { max-width: 720px; margin: 0 auto; }
+    .mission-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1rem; }
+    .mission-text { font-family: 'Bitter', Georgia, serif; font-size: clamp(20px, 3.5vw, 28px); font-weight: 600; color: #fff; line-height: 1.5; max-width: 600px; }
+    .mission-text em { color: #C0DD97; font-style: normal; }
+
+    /* SECTIONS */
+    .about-section { padding: 3rem 1.5rem; border-bottom: 0.5px solid var(--border); max-width: 720px; margin: 0 auto; }
+    .section-tag { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem; }
+    .about-section h2 { font-family: 'Bitter', Georgia, serif; font-size: 24px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 1rem; }
+    .about-section p { font-size: 15px; color: var(--text2); line-height: 1.8; margin-bottom: 1rem; }
+    .about-section p:last-child { margin-bottom: 0; }
+
+    /* PROBLEM STATS */
+    .problem-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin: 1.5rem 0; }
+    .ps-item { background: var(--bg); padding: 1.2rem 1rem; text-align: center; }
+    .ps-num { font-size: 26px; font-weight: 600; color: var(--green); letter-spacing: -1px; margin-bottom: 4px; }
+    .ps-label { font-size: 11px; color: var(--text2); line-height: 1.4; }
+
+    /* VALUES */
+    .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 1.5rem; }
+    @media (max-width: 480px) { .values-grid { grid-template-columns: 1fr; } }
+    .value-card { background: var(--bg2); border-radius: var(--radius); padding: 1.2rem; border: 0.5px solid var(--border); }
+    .value-icon { font-size: 22px; color: var(--green); margin-bottom: 8px; }
+    .value-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
+    .value-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .steps { display: flex; flex-direction: column; margin-top: 1.5rem; }
+    .step { display: flex; gap: 1.1rem; padding: 1.2rem 0; border-bottom: 0.5px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--green-light); color: var(--green-mid); font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .step-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+    /* IMPACT */
+    .impact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 1.5rem; }
+    @media (max-width: 480px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-card { background: var(--bg2); border-radius: var(--radius); padding: 1.2rem; border: 0.5px solid var(--border); display: flex; gap: 12px; align-items: flex-start; }
+    .impact-icon { font-size: 22px; color: var(--green); flex-shrink: 0; }
+    .impact-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+    .impact-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+    /* TEAM */
+    .team-card { background: #fff; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; gap: 1.2rem; align-items: flex-start; margin-top: 1.5rem; }
+    .team-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--green-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .team-avatar i { font-size: 24px; color: var(--green); }
+    .team-name { font-size: 16px; font-weight: 600; margin-bottom: 3px; }
+    .team-role { font-size: 12px; color: var(--green); font-weight: 500; margin-bottom: 8px; }
+    .team-bio { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+    /* QUOTE */
+    .founder-quote { border-left: 3px solid var(--green); padding: 1rem 1.2rem; margin: 1.5rem 0; background: var(--bg2); border-radius: 0 var(--radius) var(--radius) 0; }
+    .founder-quote p { font-family: 'Bitter', Georgia, serif; font-size: 16px; color: var(--text); line-height: 1.7; font-style: italic; margin-bottom: 6px; }
+    .founder-quote cite { font-size: 12px; color: var(--green); font-style: normal; font-weight: 600; }
+
+    /* CONTACT */
+    .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 1.5rem; }
+    @media (max-width: 480px) { .contact-grid { grid-template-columns: 1fr; } }
+    .contact-card { background: var(--bg2); border-radius: var(--radius); padding: 1.1rem; border: 0.5px solid var(--border); display: flex; gap: 10px; align-items: center; }
+    .contact-card i { font-size: 20px; color: var(--green); flex-shrink: 0; }
+    .contact-label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .contact-value { font-size: 13px; font-weight: 500; color: var(--text); }
+
+    /* CTA */
+    .cta-section { padding: 3rem 1.5rem; max-width: 720px; margin: 0 auto; text-align: center; }
+    .cta-section h2 { font-family: 'Bitter', Georgia, serif; font-size: 26px; font-weight: 700; margin-bottom: 0.8rem; }
+    .cta-section p { font-size: 15px; color: var(--text2); margin-bottom: 1.8rem; line-height: 1.7; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .cta-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-green { background: var(--green); color: #fff; border: none; padding: 12px 24px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-green:hover { background: #179063; }
+    .btn-outline { background: transparent; border: 0.5px solid var(--border); padding: 12px 24px; border-radius: 9px; font-size: 14px; cursor: pointer; color: var(--text); font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+
+    /* FOOTER */
+    footer { padding: 1.5rem; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; max-width: 720px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
+    .footer-logo { font-size: 14px; font-weight: 600; }
+    .footer-logo span { color: var(--green); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: 13px; color: var(--text2); }
+    .footer-links a:hover { color: var(--green); }
+    .footer-p { font-size: 12px; color: var(--text2); }
+
+    /* TIMELINE */
+    .timeline { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0; }
+    .tl-item { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 0.5px solid var(--border); }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-year { font-size: 12px; font-weight: 600; color: var(--green); min-width: 60px; padding-top: 2px; }
+    .tl-content { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    .tl-content strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Abuja<span>Fix</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html" class="active">About</a>
+      <a href="map.html">Live map</a>
+      <a href="report.html" class="nav-cta">Report</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="about-hero">
+    <div class="hero-tag"><i class="ti ti-info-circle"></i> About AbujaFix</div>
+    <h1>We believe <em>every pothole</em> deserves a public record.</h1>
+    <p>AbujaFix is Abuja's first independent, citizen-powered infrastructure reporting platform. We exist because the people of FCT deserve a city that works — and because silence has never fixed a road.</p>
+  </div>
+
+  <!-- MISSION BAND -->
+  <div class="mission-band">
+    <div class="mission-inner">
+      <p class="mission-label">Our mission</p>
+      <p class="mission-text">To make every infrastructure failure in Abuja <em>visible, documented and impossible to ignore</em> — until it is fixed.</p>
+    </div>
+  </div>
+
+  <!-- THE PROBLEM -->
+  <div class="about-section">
+    <p class="section-tag">The problem</p>
+    <h2>Abuja is broken — and nobody is keeping score</h2>
+    <p>The Federal Capital Territory is home to over 3 million residents and receives billions of naira in annual government allocations. Yet its roads are riddled with potholes, its drainage systems overflow every rainy season, its streetlights stand dark for months, and construction projects are abandoned midway — with no accountability whatsoever.</p>
+    <p>The biggest problem is not just the broken infrastructure. It is the complete absence of any public record. There is no single place where citizens can see what is broken, where it is broken, how long it has been broken, and whether anyone is doing anything about it.</p>
+    <p>Until now.</p>
+
+    <div class="problem-stats">
+      <div class="ps-item">
+        <div class="ps-num">15</div>
+        <div class="ps-label">Lives lost to Abuja floods in 2024 alone</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-num">366</div>
+        <div class="ps-label">Central Abuja roads confirmed needing rehabilitation</div>
+      </div>
+      <div class="ps-item">
+        <div class="ps-num">₦2.3B</div>
+        <div class="ps-label">Cost of a single flood cleanup in Jabi, 2024</div>
+      </div>
+    </div>
+
+    <p>These are not just statistics. They represent real people — residents of Nyanya, Kubwa, Lugbe, Karu and Gwagwalada — who deserve better from their government and from their city.</p>
+  </div>
+
+  <!-- OUR SOLUTION -->
+  <div class="about-section">
+    <p class="section-tag">Our solution</p>
+    <h2>How AbujaFix works</h2>
+    <p>AbujaFix is built on a simple but powerful idea — that citizens, not government, are the most reliable source of truth about the state of their own city. We give every resident the tools to document what they see and put it on a public map that the entire world can access.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Citizens report problems</div>
+          <div class="step-desc">Any resident opens AbujaFix, drops a pin on the map, describes the problem and submits. No account required. No bureaucracy. The report goes live in seconds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">Reports build a public record</div>
+          <div class="step-desc">Every submission is stored permanently in our database and displayed on a live map. The more reports pile up in one area, the clearer the evidence becomes — and the harder it is for anyone to deny.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Data creates accountability</div>
+          <div class="step-desc">Our map is fully public and accessible to journalists, NGOs, researchers and government officials. When media covers our data, when activists cite our reports, when international organisations reference our findings — government is forced to respond.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Problems get fixed</div>
+          <div class="step-desc">When a reported problem is resolved, it is marked as fixed on the map. This creates a public record of wins — proving that citizen action works and motivating more participation.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUR VALUES -->
+  <div class="about-section">
+    <p class="section-tag">Our values</p>
+    <h2>What we stand for</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon"><i class="ti ti-eye"></i></div>
+        <div class="value-title">Radical transparency</div>
+        <div class="value-desc">Every report is public. Every data point is verifiable. We never hide or filter information that citizens have a right to see.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="ti ti-shield"></i></div>
+        <div class="value-title">Complete independence</div>
+        <div class="value-desc">AbujaFix is not owned by government, funded by politicians or controlled by any institution with a conflict of interest. We answer only to the citizens of Abuja.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="ti ti-users"></i></div>
+        <div class="value-title">Citizen first</div>
+        <div class="value-desc">Every design decision, every feature, every priority is driven by one question — does this make it easier for Abuja residents to be heard?</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon"><i class="ti ti-check"></i></div>
+        <div class="value-title">Verified accuracy</div>
+        <div class="value-desc">We do not publish data we cannot verify. Every statistic on this platform is sourced from credible Nigerian publications and government records.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUR IMPACT -->
+  <div class="about-section">
+    <p class="section-tag">Our impact</p>
+    <h2>What we are building toward</h2>
+    <p>AbujaFix is in its early days — but our vision is clear. We are building the most comprehensive, real-time infrastructure database ever created for any Nigerian city. Here is what that looks like in practice:</p>
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-icon"><i class="ti ti-map-pin"></i></div>
+        <div>
+          <div class="impact-title">A complete infrastructure map</div>
+          <div class="impact-desc">Every bad road, broken light and blocked drain in Abuja — documented, geotagged and timestamped.</div>
+        </div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon"><i class="ti ti-chart-bar"></i></div>
+        <div>
+          <div class="impact-title">Monthly data reports</div>
+          <div class="impact-desc">Regular published reports showing infrastructure trends by area — given freely to media, NGOs and government.</div>
+        </div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon"><i class="ti ti-building"></i></div>
+        <div>
+          <div class="impact-title">Government accountability</div>
+          <div class="impact-desc">A public record that makes it impossible for FCDA and FCT Administration to claim ignorance of infrastructure failures.</div>
+        </div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon"><i class="ti ti-world"></i></div>
+        <div>
+          <div class="impact-title">National expansion</div>
+          <div class="impact-desc">Starting with Abuja, expanding to Lagos, Kano, Port Harcourt and every state in Nigeria.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUR STORY -->
+  <div class="about-section">
+    <p class="section-tag">Our story</p>
+    <h2>How AbujaFix was born</h2>
+    <p>AbujaFix was founded in 2026 by a young Abuja resident who was tired of complaining about the same potholes, the same broken lights, the same flooded streets — with nothing changing. No tools existed specifically for Abuja residents to document and report these problems. The platforms that existed either focused on government budgets, were controlled by government, or were national tools too broad to be useful at the street level.</p>
+
+    <div class="founder-quote">
+      <p>"I didn't build AbujaFix to make money. I built it because I believe Abuja deserves better — and because I knew that if citizens had the right tools, they could hold their city accountable in ways that government cannot ignore."</p>
+      <cite>— Founder, AbujaFix</cite>
+    </div>
+
+    <p>AbujaFix was built from scratch with zero budget — just a laptop, determination and the conviction that technology can be a tool for civic good. Every line of code, every design decision and every piece of verified data on this platform was produced independently, without investors, without grants and without government support.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">2026</div>
+        <div class="tl-content"><strong>AbujaFix is founded</strong>Launched as Abuja's first citizen-powered infrastructure reporting platform with a live map, report submission system and public database.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">Next</div>
+        <div class="tl-content"><strong>First 1,000 reports</strong>Reaching 1,000 citizen-submitted infrastructure reports across all six area councils of FCT.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">Soon</div>
+        <div class="tl-content"><strong>First government response</strong>Getting a documented, public response from FCDA or FCT Administration to data published on AbujaFix.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">Future</div>
+        <div class="tl-content"><strong>National expansion</strong>Taking the AbujaFix model to every major city in Nigeria.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="about-section">
+    <p class="section-tag">The team</p>
+    <h2>Who is behind AbujaFix</h2>
+    <div class="team-card">
+      <div class="team-avatar"><i class="ti ti-user"></i></div>
+      <div>
+        <div class="team-name">AbujaFix Founder</div>
+        <div class="team-role">Founder & Builder</div>
+        <div class="team-bio">An Abuja resident with a vision for a better FCT. Built AbujaFix from the ground up with zero funding, driven entirely by the belief that citizens deserve a city that works and a government that is held accountable. Currently building the platform, growing the community and fighting for every road that needs fixing in Abuja.</div>
+      </div>
+    </div>
+    <p style="margin-top:1.2rem;font-size:14px;color:var(--text2);line-height:1.7;">AbujaFix is currently a one-person operation — but we are building a community of citizen reporters, data analysts and civic advocates who believe in our mission. If you share our values and want to contribute, we would love to hear from you.</p>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="about-section">
+    <p class="section-tag">Get in touch</p>
+    <h2>Contact us</h2>
+    <p>Whether you are a journalist, government official, NGO, estate manager or simply a resident who wants to get involved — we want to hear from you.</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <i class="ti ti-mail"></i>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">hello@abujafix.ng</div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <i class="ti ti-brand-twitter"></i>
+        <div>
+          <div class="contact-label">Twitter / X</div>
+          <div class="contact-value">@AbujaFix</div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <i class="ti ti-brand-instagram"></i>
+        <div>
+          <div class="contact-label">Instagram</div>
+          <div class="contact-value">@AbujaFix</div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <i class="ti ti-map-pin"></i>
+        <div>
+          <div class="contact-label">Location</div>
+          <div class="contact-value">Abuja, FCT, Nigeria</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>Ready to make your voice count?</h2>
+    <p>Every report matters. Every pin on the map is a piece of evidence. Join thousands of Abuja residents who are refusing to stay silent about the state of their city.</p>
+    <div class="cta-btns">
+      <a href="report.html" class="btn-green"><i class="ti ti-plus"></i> Report a problem</a>
+      <a href="map.html" class="btn-outline"><i class="ti ti-map"></i> View live map</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">Abuja<span>Fix</span></div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="map.html">Live map</a>
+      <a href="report.html">Report</a>
+    </div>
+    <div class="footer-p">Built for Abuja. 🇳🇬</div>
+  </footer>
+
+</body>
+</html>
