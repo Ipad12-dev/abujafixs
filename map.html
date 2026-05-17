@@ -98,6 +98,7 @@
     <div class="logo"><a href="index.html">Abuja<span>Fix</span></a></div>
     <div class="nav-links">
       <a href="index.html">Home</a>
+      <a href="about.html">About</a>
       <a href="map.html" class="active">Live map</a>
       <a href="report.html" class="nav-cta"><i class="ti ti-plus"></i> Report</a>
     </div>
@@ -165,9 +166,10 @@
     function makeIcon(color) {
       return L.divIcon({
         className: '',
-        html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7],
+        html: `<div style="width:22px;height:22px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.35);cursor:pointer;"></div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -14],
       });
     }
 
@@ -186,15 +188,17 @@
         if (!r.lat || !r.lng) return;
         const cfg = typeConfig[r.type] || typeConfig.other;
         const marker = L.marker([r.lat, r.lng], { icon: makeIcon(cfg.color) });
-        const catPillStyle = `background:${cfg.color}22;color:${cfg.color};`;
-        marker.bindPopup(`
-          <div class="af-popup">
-            <strong>${r.area}</strong>
-            <span class="pop-cat" style="${catPillStyle}">${cfg.label}</span>
-            <div class="pop-desc">${r.description || 'No description provided'}</div>
-            <div class="pop-time">Reported ${timeAgo(r.created_at)} · #${r.id.slice(0,8).toUpperCase()}</div>
-          </div>
-        `, { maxWidth: 220 });
+        const desc = (r.description || 'No description provided').replace(/[<>]/g, '');
+        const shortId = r.id ? r.id.slice(0,8).toUpperCase() : '--------';
+        marker.bindPopup(
+          '<div style="font-family:Inter,system-ui,sans-serif;font-size:13px;min-width:180px;">' +
+          '<div style="font-size:15px;font-weight:600;margin-bottom:5px;color:#1A1A18;">' + r.area + '</div>' +
+          '<span style="background:' + cfg.color + '22;color:' + cfg.color + ';font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px;">' + cfg.label + '</span>' +
+          '<div style="color:#6B6B68;line-height:1.5;margin-bottom:7px;font-size:12px;">' + desc + '</div>' +
+          '<div style="font-size:11px;color:#999;">Reported ' + timeAgo(r.created_at) + ' · #' + shortId + '</div>' +
+          '</div>',
+          { maxWidth: 240 }
+        );
         marker.addTo(map);
         markers.push({ marker, type: r.type });
       });
