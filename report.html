@@ -133,6 +133,14 @@
           <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-droplet-off"></i><div class="cat-label">Blocked drain</div></div>
           <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-building-off"></i><div class="cat-label">Abandoned project</div></div>
           <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-trash"></i><div class="cat-label">Waste / refuse</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-bridge"></i><div class="cat-label">Broken bridge</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-droplet"></i><div class="cat-label">Water pipe burst</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-trash-off"></i><div class="cat-label">Illegal dumping site</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-walk"></i><div class="cat-label">Damaged pavement</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-tree"></i><div class="cat-label">Fallen tree</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-wall"></i><div class="cat-label">Collapsed fence / wall</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-ripple"></i><div class="cat-label">Erosion / land sink</div></div>
+          <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-circle-dashed"></i><div class="cat-label">Open manhole</div></div>
           <div class="cat-card" onclick="pickCat(this,'q-cats')"><i class="ti ti-dots"></i><div class="cat-label">Other</div></div>
         </div>
       </div>
@@ -148,11 +156,24 @@
       <p class="section-title"><i class="ti ti-map-pin"></i> Location details</p>
       <div class="map-box">
         <div class="map-box-header">
-          <span class="map-box-title">Pin your exact location</span>
-          <span class="map-badge">Abuja FCT</span>
+          <span class="map-box-title"><i class="ti ti-map-pin" style="color:var(--green);font-size:15px;"></i> Drop a pin on the exact location</span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button onclick="locateMe()" style="background:var(--green);color:#fff;border:none;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-current-location"></i> Use my location</button>
+            <span class="map-badge">Abuja FCT</span>
+          </div>
         </div>
-        <div id="pin-map"></div>
-        <div class="map-box-footer" id="pin-coords"><i class="ti ti-info-circle"></i> Tap the map to drop a pin on the exact spot</div>
+        <div style="position:relative;">
+          <div id="pin-map" style="height:300px;"></div>
+          <div id="map-overlay" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(29,158,117,0.08);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity 0.3s;" >
+            <div style="background:#fff;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:500;color:var(--text2);display:flex;align-items:center;gap:7px;box-shadow:0 2px 12px rgba(0,0,0,0.12);">
+              <i class="ti ti-hand-finger" style="color:var(--green);font-size:16px;"></i> Tap anywhere on the map to pin your location
+            </div>
+          </div>
+        </div>
+        <div class="map-box-footer" id="pin-coords" style="display:flex;align-items:center;justify-content:space-between;">
+          <span><i class="ti ti-info-circle"></i> No pin dropped yet</span>
+          <button id="clear-pin-btn" onclick="clearPin()" style="display:none;background:none;border:none;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;display:none;align-items:center;gap:4px;"><i class="ti ti-x"></i> Clear pin</button>
+        </div>
       </div>
       <div class="form-row">
         <div class="field">
@@ -181,6 +202,14 @@
           <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-droplet-off"></i><div class="cat-label">Blocked drain</div></div>
           <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-building-off"></i><div class="cat-label">Abandoned project</div></div>
           <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-trash"></i><div class="cat-label">Waste / refuse</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-bridge"></i><div class="cat-label">Broken bridge</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-droplet"></i><div class="cat-label">Water pipe burst</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-trash-off"></i><div class="cat-label">Illegal dumping site</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-walk"></i><div class="cat-label">Damaged pavement</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-tree"></i><div class="cat-label">Fallen tree</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-wall"></i><div class="cat-label">Collapsed fence / wall</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-ripple"></i><div class="cat-label">Erosion / land sink</div></div>
+          <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-circle-dashed"></i><div class="cat-label">Open manhole</div></div>
           <div class="cat-card" onclick="pickCat(this,'d-cats')"><i class="ti ti-dots"></i><div class="cat-label">Other</div></div>
         </div>
       </div>
@@ -254,9 +283,20 @@
     };
 
     var typeMap = {
-      'Bad road / pothole':'road','Broken streetlight':'light',
-      'Blocked drain':'drain','Abandoned project':'abandon',
-      'Waste / refuse':'other','Other':'other'
+      'Bad road / pothole':'road',
+      'Broken streetlight':'light',
+      'Blocked drain':'drain',
+      'Abandoned project':'abandon',
+      'Waste / refuse':'waste',
+      'Broken bridge':'bridge',
+      'Water pipe burst':'water',
+      'Illegal dumping site':'dumping',
+      'Damaged pavement':'pavement',
+      'Fallen tree':'tree',
+      'Collapsed fence / wall':'collapse',
+      'Erosion / land sink':'erosion',
+      'Open manhole':'manhole',
+      'Other':'other'
     };
 
     var pinMap=null, pinMarker=null, pinnedLat=null, pinnedLng=null;
@@ -271,17 +311,126 @@
 
     function initPinMap() {
       if (pinMap) { pinMap.invalidateSize(); return; }
-      pinMap = L.map('pin-map').setView([9.058, 7.450], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-        attribution:'© OpenStreetMap', maxZoom:19
+
+      pinMap = L.map('pin-map', { zoomControl: true }).setView([9.058, 7.450], 13);
+
+      // Better looking map tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CARTO',
+        maxZoom: 19
       }).addTo(pinMap);
+
+      // Custom red drop pin icon
+      var pinIcon = L.divIcon({
+        className: '',
+        html: '<div style="position:relative;width:32px;height:40px;">' +
+              '<div style="width:32px;height:32px;border-radius:50% 50% 50% 0;background:#E24B4A;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);"></div>' +
+              '<div style="position:absolute;top:8px;left:8px;width:12px;height:12px;border-radius:50%;background:#fff;"></div>' +
+              '</div>',
+        iconSize: [32, 40],
+        iconAnchor: [16, 40],
+        popupAnchor: [0, -42]
+      });
+
       pinMap.on('click', function(e) {
         pinnedLat = parseFloat(e.latlng.lat.toFixed(6));
         pinnedLng = parseFloat(e.latlng.lng.toFixed(6));
+
         if (pinMarker) pinMap.removeLayer(pinMarker);
-        pinMarker = L.marker([pinnedLat, pinnedLng]).addTo(pinMap);
-        document.getElementById('pin-coords').textContent = 'Pin dropped — location saved!';
+        pinMarker = L.marker([pinnedLat, pinnedLng], { icon: pinIcon }).addTo(pinMap);
+
+        // Smooth fly to pin
+        pinMap.flyTo([pinnedLat, pinnedLng], 16, { duration: 0.8 });
+
+        // Hide overlay
+        var overlay = document.getElementById('map-overlay');
+        if (overlay) overlay.style.opacity = '0';
+
+        // Update footer
+        var coordsEl = document.getElementById('pin-coords');
+        coordsEl.innerHTML =
+          '<span style="color:var(--green);font-weight:500;display:flex;align-items:center;gap:5px;">' +
+          '<i class="ti ti-circle-check"></i> Pin dropped at ' + pinnedLat + ', ' + pinnedLng + '</span>' +
+          '<button onclick="clearPin()" style="background:none;border:none;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;">' +
+          '<i class="ti ti-x"></i> Clear pin</button>';
+
+        // Reverse geocode area name
+        fetch('https://nominatim.openstreetmap.org/reverse?lat=' + pinnedLat + '&lon=' + pinnedLng + '&format=json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && data.address) {
+            var suburb = data.address.suburb || data.address.neighbourhood || data.address.city_district || '';
+            if (suburb) {
+              var areaSelect = document.getElementById('d-area');
+              // Try to match to our areas list
+              var opts = areaSelect.options;
+              for (var i = 0; i < opts.length; i++) {
+                if (suburb.toLowerCase().indexOf(opts[i].value.toLowerCase()) > -1 ||
+                    opts[i].value.toLowerCase().indexOf(suburb.toLowerCase()) > -1) {
+                  areaSelect.value = opts[i].value;
+                  break;
+                }
+              }
+            }
+          }
+        })
+        .catch(function() {});
       });
+    }
+
+    function locateMe() {
+      if (!navigator.geolocation) { alert('Location not supported on this device.'); return; }
+      var btn = document.querySelector('[onclick="locateMe()"]');
+      btn.textContent = 'Locating...';
+      btn.disabled = true;
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        if (!pinMap) initPinMap();
+        pinMap.flyTo([lat, lng], 16, { duration: 1 });
+
+        // Simulate a click at user location
+        pinnedLat = parseFloat(lat.toFixed(6));
+        pinnedLng = parseFloat(lng.toFixed(6));
+
+        var pinIcon = L.divIcon({
+          className: '',
+          html: '<div style="position:relative;width:32px;height:40px;">' +
+                '<div style="width:32px;height:32px;border-radius:50% 50% 50% 0;background:#E24B4A;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);"></div>' +
+                '<div style="position:absolute;top:8px;left:8px;width:12px;height:12px;border-radius:50%;background:#fff;"></div>' +
+                '</div>',
+          iconSize: [32, 40],
+          iconAnchor: [16, 40]
+        });
+
+        if (pinMarker) pinMap.removeLayer(pinMarker);
+        pinMarker = L.marker([lat, lng], { icon: pinIcon }).addTo(pinMap);
+
+        var overlay = document.getElementById('map-overlay');
+        if (overlay) overlay.style.opacity = '0';
+
+        document.getElementById('pin-coords').innerHTML =
+          '<span style="color:var(--green);font-weight:500;display:flex;align-items:center;gap:5px;">' +
+          '<i class="ti ti-circle-check"></i> Your location pinned successfully!</span>' +
+          '<button onclick="clearPin()" style="background:none;border:none;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;">' +
+          '<i class="ti ti-x"></i> Clear pin</button>';
+
+        btn.innerHTML = '<i class="ti ti-current-location"></i> Use my location';
+        btn.disabled = false;
+      }, function() {
+        alert('Could not get your location. Please tap the map manually.');
+        btn.innerHTML = '<i class="ti ti-current-location"></i> Use my location';
+        btn.disabled = false;
+      });
+    }
+
+    function clearPin() {
+      if (pinMarker && pinMap) pinMap.removeLayer(pinMarker);
+      pinMarker = null; pinnedLat = null; pinnedLng = null;
+      var overlay = document.getElementById('map-overlay');
+      if (overlay) overlay.style.opacity = '1';
+      document.getElementById('pin-coords').innerHTML =
+        '<span><i class="ti ti-info-circle"></i> No pin dropped yet</span>';
     }
 
     function pickCat(el, groupId) {
