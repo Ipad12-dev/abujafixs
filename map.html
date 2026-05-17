@@ -104,20 +104,27 @@
     </div>
   </nav>
 
-  <div class="stats-bar">
-    <div class="stat"><div class="stat-n road" id="cnt-road">24</div><div class="stat-l">Bad roads</div></div>
-    <div class="stat"><div class="stat-n drain" id="cnt-drain">17</div><div class="stat-l">Blocked drains</div></div>
-    <div class="stat"><div class="stat-n light" id="cnt-light">11</div><div class="stat-l">Broken lights</div></div>
-    <div class="stat"><div class="stat-n other" id="cnt-other">9</div><div class="stat-l">Other issues</div></div>
+  <div class="stats-bar" style="grid-template-columns:repeat(7,1fr);">
+    <div class="stat"><div class="stat-n" style="color:#1D9E75;" id="cnt-all">0</div><div class="stat-l">Total reports</div></div>
+    <div class="stat"><div class="stat-n road" id="cnt-road">0</div><div class="stat-l">Bad roads</div></div>
+    <div class="stat"><div class="stat-n drain" id="cnt-drain">0</div><div class="stat-l">Blocked drains</div></div>
+    <div class="stat"><div class="stat-n light" id="cnt-light">0</div><div class="stat-l">Broken lights</div></div>
+    <div class="stat"><div class="stat-n" style="color:#888780;" id="cnt-abandon">0</div><div class="stat-l">Abandoned</div></div>
+    <div class="stat"><div class="stat-n" style="color:#5C8A3C;" id="cnt-waste">0</div><div class="stat-l">Waste / refuse</div></div>
+    <div class="stat"><div class="stat-n" style="color:#7B61C4;" id="cnt-other">0</div><div class="stat-l">Other issues</div></div>
   </div>
 
   <div class="filter-bar">
     <span class="filter-label">Filter:</span>
-    <button class="filt all active" onclick="filterReports('all', this)">All (61)</button>
+    <button class="filt all active" onclick="filterReports('all', this)" id="filt-all-btn">All (0)</button>
     <button class="filt road" onclick="filterReports('road', this)">Bad roads</button>
     <button class="filt drain" onclick="filterReports('drain', this)">Blocked drains</button>
     <button class="filt light" onclick="filterReports('light', this)">Broken lights</button>
     <button class="filt abandon" onclick="filterReports('abandon', this)">Abandoned</button>
+    <button class="filt" style="background:var(--bg)" onclick="filterReports('waste', this)">Waste</button>
+    <button class="filt" style="background:var(--bg)" onclick="filterReports('bridge', this)">Bridges</button>
+    <button class="filt" style="background:var(--bg)" onclick="filterReports('water', this)">Water pipes</button>
+    <button class="filt" style="background:var(--bg)" onclick="filterReports('other', this)">Other</button>
   </div>
 
   <div class="map-layout">
@@ -133,10 +140,15 @@
 
   <div class="map-footer">
     <div class="legend">
-      <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Bad road</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Blocked drain</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Broken light</div>
-      <div class="leg-item"><div class="leg-dot" style="background:var(--grey)"></div>Abandoned</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#E24B4A"></div>Bad road</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Blocked drain</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div>Broken light</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#888780"></div>Abandoned</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#5C8A3C"></div>Waste</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#C0392B"></div>Bridge</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#2980B9"></div>Water pipe</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#8E44AD"></div>Manhole</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#7B61C4"></div>Other</div>
     </div>
     <button class="report-btn" onclick="window.location.href='report.html'"><i class="ti ti-plus"></i> Add report</button>
   </div>
@@ -146,11 +158,20 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhaGN5ZW5xb3VjaW9sbXNvYWl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MzUzNTgsImV4cCI6MjA5NDQxMTM1OH0.YXCmkUYbLd8kuiWMaBFl-uuKLipYT0mjg7AglQtIaVA';
 
     const typeConfig = {
-      road:    { color: '#E24B4A', label: 'Bad road' },
-      drain:   { color: '#378ADD', label: 'Blocked drain' },
-      light:   { color: '#BA7517', label: 'Broken light' },
-      abandon: { color: '#888780', label: 'Abandoned project' },
-      other:   { color: '#888780', label: 'Other' },
+      road:     { color: '#E24B4A', label: 'Bad road' },
+      drain:    { color: '#378ADD', label: 'Blocked drain' },
+      light:    { color: '#BA7517', label: 'Broken light' },
+      abandon:  { color: '#888780', label: 'Abandoned project' },
+      waste:    { color: '#5C8A3C', label: 'Waste / refuse' },
+      bridge:   { color: '#C0392B', label: 'Broken bridge' },
+      water:    { color: '#2980B9', label: 'Water pipe burst' },
+      dumping:  { color: '#6D4C41', label: 'Illegal dumping' },
+      pavement: { color: '#F39C12', label: 'Damaged pavement' },
+      tree:     { color: '#27AE60', label: 'Fallen tree' },
+      collapse: { color: '#7F8C8D', label: 'Collapsed fence' },
+      erosion:  { color: '#D35400', label: 'Erosion / land sink' },
+      manhole:  { color: '#8E44AD', label: 'Open manhole' },
+      other:    { color: '#7B61C4', label: 'Other' },
     };
 
     const map = L.map('map', { zoomControl: true }).setView([9.058, 7.450], 12);
@@ -231,10 +252,15 @@
     }
 
     function updateStats(reports) {
-      document.getElementById('cnt-road').textContent  = reports.filter(r => r.type === 'road').length;
-      document.getElementById('cnt-drain').textContent = reports.filter(r => r.type === 'drain').length;
-      document.getElementById('cnt-light').textContent = reports.filter(r => r.type === 'light').length;
-      document.getElementById('cnt-other').textContent = reports.filter(r => !['road','drain','light'].includes(r.type)).length;
+      document.getElementById('cnt-all').textContent     = reports.length;
+      document.getElementById('cnt-road').textContent    = reports.filter(r => r.type === 'road').length;
+      document.getElementById('cnt-drain').textContent   = reports.filter(r => r.type === 'drain').length;
+      document.getElementById('cnt-light').textContent   = reports.filter(r => r.type === 'light').length;
+      document.getElementById('cnt-abandon').textContent = reports.filter(r => r.type === 'abandon').length;
+      document.getElementById('cnt-waste').textContent   = reports.filter(r => r.type === 'waste').length;
+      document.getElementById('cnt-other').textContent   = reports.filter(r => !['road','drain','light','abandon','waste'].includes(r.type)).length;
+      var allBtn = document.getElementById('filt-all-btn');
+      if (allBtn) allBtn.textContent = 'All (' + reports.length + ')';
     }
 
     function flyTo(lat, lng) {
