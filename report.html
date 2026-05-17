@@ -155,12 +155,16 @@
     <div id="mode-detail" style="display:none;" class="form-wrap">
       <p class="section-title"><i class="ti ti-map-pin"></i> Location details</p>
       <div class="map-box">
-        <div class="map-box-header">
-          <span class="map-box-title"><i class="ti ti-map-pin" style="color:var(--green);font-size:15px;"></i> Drop a pin on the exact location</span>
-          <div style="display:flex;gap:6px;align-items:center;">
-            <button onclick="locateMe()" style="background:var(--green);color:#fff;border:none;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;"><i class="ti ti-current-location"></i> Use my location</button>
-            <span class="map-badge">Abuja FCT</span>
+        <div class="map-box-header" style="flex-direction:column;gap:10px;align-items:stretch;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span class="map-box-title"><i class="ti ti-map-pin" style="color:var(--green);font-size:15px;"></i> Drop a pin on the exact location</span>
+            <button onclick="locateMe()" style="background:var(--green);color:#fff;border:none;padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0;"><i class="ti ti-current-location"></i> Use my location</button>
           </div>
+          <div style="display:flex;gap:8px;">
+            <input id="map-search" type="text" placeholder="Search street, area or building in Abuja..." style="flex:1;padding:9px 14px;border:0.5px solid #D0CFC9;border-radius:9px;font-size:13px;background:#fff;color:var(--text);outline:none;font-family:inherit;" onkeydown="if(event.key==='Enter') searchLocation()" />
+            <button onclick="searchLocation()" style="background:var(--green);color:#fff;border:none;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;"><i class="ti ti-search"></i></button>
+          </div>
+          <div id="search-results" style="display:none;background:#fff;border:0.5px solid var(--border);border-radius:9px;overflow:hidden;max-height:160px;overflow-y:auto;"></div>
         </div>
         <div style="position:relative;">
           <div id="pin-map" style="height:300px;"></div>
@@ -312,11 +316,11 @@
     function initPinMap() {
       if (pinMap) { pinMap.invalidateSize(); return; }
 
-      pinMap = L.map('pin-map', { zoomControl: true }).setView([9.058, 7.450], 13);
+      pinMap = L.map('pin-map', { zoomControl: true }).setView([9.058, 7.450], 15);
 
-      // Better looking map tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO',
+      // Detailed OSM tiles showing streets, buildings, apartments
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(pinMap);
 
@@ -422,6 +426,68 @@
         btn.innerHTML = '<i class="ti ti-current-location"></i> Use my location';
         btn.disabled = false;
       });
+    }
+
+    function searchLocation() {
+      var query = document.getElementById('map-search').value.trim();
+      if (!query) return;
+      if (!pinMap) initPinMap();
+      var resultsEl = document.getElementById('search-results');
+      resultsEl.style.display = 'block';
+      resultsEl.innerHTML = '<div style="padding:10px 14px;font-size:13px;color:var(--text2);">Searching...</div>';
+
+      fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query + ' Abuja Nigeria') + '&format=json&limit=5&addressdetails=1')
+      .then(function(r) { return r.json(); })
+      .then(function(results) {
+        if (!results || results.length === 0) {
+          resultsEl.innerHTML = '<div style="padding:10px 14px;font-size:13px;color:var(--text2);">No results found. Try a different search.</div>';
+          return;
+        }
+        resultsEl.innerHTML = results.map(function(r, i) {
+          var name = r.display_name.replace(', Nigeria', '').replace(', Federal Capital Territory', '');
+          return '<div onclick="selectResult(' + r.lat + ',' + r.lon + ','' + name.replace(/'/g, '') + '')" ' +
+            'style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px;" ' +
+            'onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background='#fff'">' +
+            '<i class="ti ti-map-pin" style="color:var(--green);font-size:14px;flex-shrink:0;"></i>' +
+            '<span>' + name + '</span></div>';
+        }).join('');
+      })
+      .catch(function() {
+        resultsEl.innerHTML = '<div style="padding:10px 14px;font-size:13px;color:var(--red);">Search failed. Check your connection.</div>';
+      });
+    }
+
+    function selectResult(lat, lng, name) {
+      pinnedLat = parseFloat(parseFloat(lat).toFixed(6));
+      pinnedLng = parseFloat(parseFloat(lng).toFixed(6));
+
+      pinMap.flyTo([pinnedLat, pinnedLng], 17, { duration: 1 });
+
+      var pinIcon = L.divIcon({
+        className: '',
+        html: '<div style="position:relative;width:32px;height:40px;">' +
+              '<div style="width:32px;height:32px;border-radius:50% 50% 50% 0;background:#E24B4A;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,0.3);"></div>' +
+              '<div style="position:absolute;top:8px;left:8px;width:12px;height:12px;border-radius:50%;background:#fff;"></div>' +
+              '</div>',
+        iconSize: [32, 40],
+        iconAnchor: [16, 40]
+      });
+
+      if (pinMarker) pinMap.removeLayer(pinMarker);
+      pinMarker = L.marker([pinnedLat, pinnedLng], { icon: pinIcon }).addTo(pinMap);
+
+      // Close results
+      document.getElementById('search-results').style.display = 'none';
+      document.getElementById('map-search').value = name;
+
+      var overlay = document.getElementById('map-overlay');
+      if (overlay) overlay.style.opacity = '0';
+
+      document.getElementById('pin-coords').innerHTML =
+        '<span style="color:var(--green);font-weight:500;display:flex;align-items:center;gap:5px;">' +
+        '<i class="ti ti-circle-check"></i> Pinned: ' + name + '</span>' +
+        '<button onclick="clearPin()" style="background:none;border:none;font-size:12px;color:var(--red);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px;">' +
+        '<i class="ti ti-x"></i> Clear</button>';
     }
 
     function clearPin() {
